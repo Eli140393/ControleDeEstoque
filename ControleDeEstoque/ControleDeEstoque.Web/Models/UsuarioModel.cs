@@ -11,7 +11,7 @@ namespace ControleDeEstoque.Web.Models
 
         public static bool ValidarUsuario(string login, string senha)
         {
-            var ret = false;
+             var ret = false;
             using(var conexao = new SqlConnection())
             {
                 conexao.ConnectionString = "Data Source=DESKTOP-KI43LUD\\SQLEXPRESS;Initial Catalog=DB_ControleEstoque;User Id=sa;Password=eliezer140393;";
