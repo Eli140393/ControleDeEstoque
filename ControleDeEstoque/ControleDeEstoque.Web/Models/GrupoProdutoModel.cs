@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace ControleDeEstoque.Web.Models
 {
@@ -22,7 +25,7 @@ namespace ControleDeEstoque.Web.Models
             var ret = new List<GrupoProdutoModel>();
             using (var conexao = new SqlConnection())
             {
-                conexao.ConnectionString = "Data Source=DESKTOP-KI43LUD\\SQLEXPRESS;Initial Catalog=DB_ControleEstoque;User Id=sa;Password=eliezer140393;";
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
                 using (var comando = new SqlCommand())
                 {
@@ -46,15 +49,16 @@ namespace ControleDeEstoque.Web.Models
 
         public static GrupoProdutoModel RecuperarPeloId(int id)
         {
-            GrupoProdutoModel ret = null;
+             GrupoProdutoModel ret = null;
             using (var conexao = new SqlConnection())
             {
-                conexao.ConnectionString = "Data Source=DESKTOP-KI43LUD\\SQLEXPRESS;Initial Catalog=DB_ControleEstoque;User Id=sa;Password=eliezer140393;";
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
                 using (var comando = new SqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format("select * from TB_GrupoProduto where (ID_GrupoProduto = {0})", id);
+                    comando.CommandText = "select * from TB_GrupoProduto where (ID_GrupoProduto = @id)";
+                    comando.Parameters.Add("@id", SqlDbType.Int).Value = id;
                     var reader = comando.ExecuteReader();
                     if (reader.Read())
                     {
@@ -78,12 +82,14 @@ namespace ControleDeEstoque.Web.Models
             {
                 using (var conexao = new SqlConnection())
                 {
-                    conexao.ConnectionString = "Data Source=DESKTOP-KI43LUD\\SQLEXPRESS;Initial Catalog=DB_ControleEstoque;User Id=sa;Password=eliezer140393;";
+                    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                     conexao.Open();
                     using (var comando = new SqlCommand())
                     {
                         comando.Connection = conexao;
-                        comando.CommandText = string.Format("delete from TB_GrupoProduto where (ID_GrupoProduto = {0})", id);
+                        comando.CommandText ="delete from TB_GrupoProduto where (ID_GrupoProduto = @id)";
+                        comando.Parameters.Add("@id", SqlDbType.Int).Value = id;
+
                         ret = (comando.ExecuteNonQuery() > 0);
 
                     }
@@ -98,7 +104,7 @@ namespace ControleDeEstoque.Web.Models
 
             using (var conexao = new SqlConnection())
             {
-                conexao.ConnectionString = "Data Source=DESKTOP-KI43LUD\\SQLEXPRESS;Initial Catalog=DB_ControleEstoque;User Id=sa;Password=eliezer140393;";
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
                 using (var comando = new SqlCommand())
                 {
@@ -106,14 +112,18 @@ namespace ControleDeEstoque.Web.Models
 
                     if (model == null)
                     {
-                        comando.CommandText = string.Format("insert into TB_GrupoProduto (NM_GrupoProduto, DS_Ativo) values ('{0}', {1}); select convert (int, scope_identity())", this.Nome, this.Ativo ? 1 : 0);
+                        comando.CommandText = "insert into TB_GrupoProduto (NM_GrupoProduto, DS_Ativo) values (@nome, @ativo); select convert (int, scope_identity())";
+                        comando.Parameters.Add("@nome", SqlDbType.VarChar).Value = this.Nome;
+                        comando.Parameters.Add("@ativo", SqlDbType.VarChar).Value = this.Ativo ? 1 : 0;
                         ret = (int)comando.ExecuteScalar();
                     }
                     else
                     {
-                        comando.CommandText = string.Format(
-                       "update TB_GrupoProduto set NM_GrupoProduto = '{1}', DS_Ativo = {2} where ID_GrupoProduto = {0}",
-                       this.Id, this.Nome, this.Ativo ? 1 : 0);
+                        comando.CommandText = "update TB_GrupoProduto set NM_GrupoProduto = @nome, DS_Ativo = @ativo where ID_GrupoProduto = @id";
+                        comando.Parameters.Add("@nome", SqlDbType.VarChar).Value = this.Nome;
+                        comando.Parameters.Add("@ativo", SqlDbType.VarChar).Value = this.Ativo ? 1 : 0;
+                        comando.Parameters.Add("@id", SqlDbType.Int).Value = this.Id;
+
                         if (comando.ExecuteNonQuery() > 0)
                         {
                             ret = this.Id;
