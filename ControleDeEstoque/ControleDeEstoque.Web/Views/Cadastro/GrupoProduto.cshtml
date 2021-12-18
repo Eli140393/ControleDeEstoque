@@ -49,21 +49,50 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr data-id="@item.Id">
-                                <td>@item.Nome</td>
-                                <td>@{var ativo = (item.Ativo ? "SIM" : "NÃO");}@ativo</td>
-                                <td>
-                                    <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-                                    <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-                                </td>
-                            </tr>
+                        @{
+
+                            var linha = 0;
+                            foreach (var item in Model)
+                            {
+                                linha++;
+                                if (linha <= ViewBag.QuantidadeLinhasPorPaginas)
+                                {
+                                    <tr data-id="@item.Id">
+                                        <td>@item.Nome</td>
+                                        <td>@{var ativo = (item.Ativo ? "SIM" : "NÃO");}@ativo</td>
+                                        <td>
+                                            <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                                            <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
                         }
                     </tbody>
                 </table>
             </div>
         </div>
+        @if (ViewBag.QuantidadePaginas > 1)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            @for (int i = 2; i <= ViewBag.QuantidadePaginas; i++)
+                            {
+                                <li class="page-item"><a class="page-link" href="#">@i</a></li>
+
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        }
     </section>
 </div>
 @Html.Hidden("id_cadastro")
@@ -157,6 +186,7 @@
 
             return '<ul>' + ret + '</ul>'
         }
+
         $(document).on('click', '#btn_incluir', function () {
             abrir_form({ Id: 0, Nome: '', Ativo: true });
         })
@@ -171,7 +201,7 @@
                         abrir_form(response);
                     }
                 });
-                 
+
             })
             .on('click', '.btn-excluir', function () {
                 var btn = $(this),
@@ -184,11 +214,11 @@
                     buttons: {
                         confirm: {
                             label: 'Sim',
-                            className: 'btn-success',
+                            className: 'btn-danger'
                         },
                         cancel: {
                             label: 'Não',
-                            className: 'btn-danger',
+                            className: 'btn-sucess'
                         }
                     },
                     callback: function (result) {
@@ -241,6 +271,23 @@
                         $('#msg_erro').hide();
                     }
                 });
+            })
+        on('click', '.page-item', function () {
+            var btn = $(this);
+            pagina = btn.text(),
+                url = '@Url.Action("GrupoProdutoPagina", "Cadastro")';
+            $.post(url, add_anti_forgery_token({ pagina }), function (response) {
+                if (response) {
+                    var table = $('#grid_cadastro').find('tbody');
+                    table.empty();
+                    for (var i = 0; i < response.length; i++) {
+                        table.append(criar_linha_grid(response[i]));
+                        
+                    }
+
+                    
+                }
+
             });
+        });
     </script>
-}

@@ -9,18 +9,119 @@ namespace ControleDeEstoque.Web.Controllers
 {
     public class CadastroController : Controller
     {
-     
+        private const int _quantMaxLinhasPorPaginas = 5;
+        private const string _senhaPadrao = "($127;$188)";
+
+        #region Usuários
+
+
         [Authorize]
-        public ActionResult GrupoProduto()
+        public ActionResult Usuario()
         {
-            return View(GrupoProdutoModel.RecuperarLista());
+            ViewBag.SenhaPadrao = _senhaPadrao;
+            return View(UsuarioModel.RecuperarLista());
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
 
-        public ActionResult RecuperarGrupoProduto(int id)
+        public ActionResult RecuperarUsuario(int id)
+        {
+            return Json(UsuarioModel.RecuperarPeloId(id));
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+
+        public ActionResult SalvarUsuario(UsuarioModel model)
+        {
+            var resultado = "OK";
+            var mensagens = new List<string>();
+            var idSalvo = string.Empty;
+            if (!ModelState.IsValid)
+            {
+                resultado = "AVISO";
+                mensagens = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+            }
+            else
+            {
+                try
+                {
+                    if(model.Senha == _senhaPadrao)
+                    {
+                        model.Senha = "";
+                    }
+                    var id = model.Salvar();
+                    if (id > 0)
+                    {
+                        idSalvo = id.ToString();
+                    }
+                    else
+                    {
+                        resultado = "ERRO";
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    resultado = "ERRO";
+                }
+
+
+            }
+            return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+
+        public ActionResult ExcluirUsuario(int id)
+        {
+            return Json(UsuarioModel.ExcluirPeloId(id));
+        }
+        [Authorize]
+
+        #endregion
+
+
+        #region Grupo de produtos
+
+        [Authorize]
+        public ActionResult GrupoProduto()
+        {
+
+            ViewBag.QuantidadeLinhasPorPaginas = _quantMaxLinhasPorPaginas;
+            ViewBag.PaginaAtual = 1;
+
+            var lista = GrupoProdutoModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPaginas);
+            var quant = GrupoProdutoModel.RecuperarQuantidade();
+
+            var difQuantidadePaginas = (quant % ViewBag.QuantidadeLinhasPorPaginas) > 0 ? 1: 0;
+            ViewBag.QuantidadePaginas = (quant / ViewBag.QuantidadeLinhasPorPaginas) + difQuantidadePaginas;
+            
+            return View(lista);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public JsonResult GrupoProdutoPagina(int pagina)
+        {
+            var lista = GrupoProdutoModel.RecuperarLista(pagina, _quantMaxLinhasPorPaginas);
+
+
+            return Json(lista);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+
+        public JsonResult RecuperarGrupoProduto(int id)
         {
             return Json(GrupoProdutoModel.RecuperarPeloId(id));
         }
@@ -29,7 +130,7 @@ namespace ControleDeEstoque.Web.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
 
-        public ActionResult SalvarGrupoProduto(GrupoProdutoModel model)
+        public JsonResult SalvarGrupoProduto(GrupoProdutoModel model)
         {
             var resultado = "OK";
             var mensagens = new List<string>();
@@ -69,11 +170,13 @@ namespace ControleDeEstoque.Web.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
 
-        public ActionResult ExcluirGrupoProduto(int id)
+        public JsonResult ExcluirGrupoProduto(int id)
         {
             return Json(GrupoProdutoModel.ExcluirPeloId(id));
         }
         [Authorize]
+
+        #endregion
         public ActionResult MarcaProduto()
         {
             return View();
@@ -125,10 +228,6 @@ namespace ControleDeEstoque.Web.Controllers
             return View();
         }
 
-        [Authorize]
-        public ActionResult Usuario()
-        {
-            return View();
-        }
+       
     }
 }

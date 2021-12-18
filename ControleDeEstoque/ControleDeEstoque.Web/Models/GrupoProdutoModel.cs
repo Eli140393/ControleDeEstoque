@@ -20,7 +20,7 @@ namespace ControleDeEstoque.Web.Models
         public bool Ativo { get; set; }
 
 
-        public static List<GrupoProdutoModel> RecuperarLista()
+        public static List<GrupoProdutoModel> RecuperarLista(int pagina, int tamPagina)
         {
             var ret = new List<GrupoProdutoModel>();
             using (var conexao = new SqlConnection())
@@ -29,8 +29,12 @@ namespace ControleDeEstoque.Web.Models
                 conexao.Open();
                 using (var comando = new SqlCommand())
                 {
+                    var pos = (pagina - 1) * tamPagina;
+
                     comando.Connection = conexao;
-                    comando.CommandText = "select * from TB_GrupoProduto order by NM_GrupoProduto";
+                    comando.CommandText = string.Format(
+                    "select * from TB_GrupoProduto order by NM_GrupoProduto offset {0}, fetch next {1} rows only",
+                    pos > 0 ? pos - 1 : 0, tamPagina);
                     var reader = comando.ExecuteReader();
                     while (reader.Read())
                     {
@@ -47,9 +51,28 @@ namespace ControleDeEstoque.Web.Models
             return ret;
         }
 
+
+        public static int RecuperarQuantidade()
+        {
+            var ret = 0;
+            using (var conexao = new SqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+                using (var comando = new SqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = "select count(*) from TB_GrupoProduto";
+                    ret = (int)comando.ExecuteScalar();
+                }
+            }
+
+            return ret;
+        }
+
         public static GrupoProdutoModel RecuperarPeloId(int id)
         {
-             GrupoProdutoModel ret = null;
+            GrupoProdutoModel ret = null;
             using (var conexao = new SqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
@@ -87,7 +110,7 @@ namespace ControleDeEstoque.Web.Models
                     using (var comando = new SqlCommand())
                     {
                         comando.Connection = conexao;
-                        comando.CommandText ="delete from TB_GrupoProduto where (ID_GrupoProduto = @id)";
+                        comando.CommandText = "delete from TB_GrupoProduto where (ID_GrupoProduto = @id)";
                         comando.Parameters.Add("@id", SqlDbType.Int).Value = id;
 
                         ret = (comando.ExecuteNonQuery() > 0);

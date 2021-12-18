@@ -5,10 +5,11 @@ DROP TABLE IF EXISTS TB_Usuario;
 
 CREATE TABLE TB_Usuario 
 (
-	ID_Login INT IDENTITY(1,1),
-	DS_Usuario VARCHAR(50) NOT NULL,
+	ID_Usuario INT IDENTITY(1,1),
+	NM_Usuario VARCHAR(90) NOT NULL,
+	DS_Login VARCHAR(50) NOT NULL,
 	DS_Senha VARCHAR(50) NOT NULL,
-    PRIMARY KEY (ID_Login)
+    PRIMARY KEY (ID_Usuario)
 );
 
 CREATE TABLE TB_GrupoProduto (
@@ -22,11 +23,13 @@ PRIMARY KEY (ID_GrupoProduto)
 
 INSERT INTO TB_Usuario
 (
-DS_Usuario,
+NM_Usuario,
+DS_Login,
 DS_Senha
 )
 VALUES
 (
+'Eliezer Silva',
 'eliezer',
 '202cb962ac59075b964b07152d234b70'
 );
