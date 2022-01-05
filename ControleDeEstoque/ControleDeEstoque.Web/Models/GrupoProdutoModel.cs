@@ -33,7 +33,7 @@ namespace ControleDeEstoque.Web.Models
 
                     comando.Connection = conexao;
                     comando.CommandText = string.Format(
-                    "select * from TB_GrupoProduto order by NM_GrupoProduto offset {0}, fetch next {1} rows only",
+                    "select * from TB_GrupoProduto order by NM_GrupoProduto offset {0} rows fetch next {1} rows only",
                     pos > 0 ? pos - 1 : 0, tamPagina);
                     var reader = comando.ExecuteReader();
                     while (reader.Read())

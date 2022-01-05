@@ -9,7 +9,7 @@ namespace ControleDeEstoque.Web.Controllers
 {
     public class CadastroController : Controller
     {
-        private const int _quantMaxLinhasPorPaginas = 5;
+        private const int _quantMaxLinhasPorPagina = 5;
         private const string _senhaPadrao = "($127;$188)";
 
         #region Usuários
@@ -93,11 +93,11 @@ namespace ControleDeEstoque.Web.Controllers
         [Authorize]
         public ActionResult GrupoProduto()
         {
-
-            ViewBag.QuantidadeLinhasPorPaginas = _quantMaxLinhasPorPaginas;
+            ViewBag.ListaTamPag = new SelectList(new int[] { _quantMaxLinhasPorPagina, 10, 15, 20});
+            ViewBag.QuantidadeLinhasPorPaginas = _quantMaxLinhasPorPagina;
             ViewBag.PaginaAtual = 1;
 
-            var lista = GrupoProdutoModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPaginas);
+            var lista = GrupoProdutoModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina);
             var quant = GrupoProdutoModel.RecuperarQuantidade();
 
             var difQuantidadePaginas = (quant % ViewBag.QuantidadeLinhasPorPaginas) > 0 ? 1: 0;
@@ -111,7 +111,7 @@ namespace ControleDeEstoque.Web.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult GrupoProdutoPagina(int pagina)
         {
-            var lista = GrupoProdutoModel.RecuperarLista(pagina, _quantMaxLinhasPorPaginas);
+            var lista = GrupoProdutoModel.RecuperarLista(pagina, _quantMaxLinhasPorPagina);
 
 
             return Json(lista);

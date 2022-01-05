@@ -2,6 +2,9 @@
 @{
     ViewBag.Title = "Cadastro de Grupo de Produtos";
 }
+
+<link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+
 <style>
     #grid_cadastro > thead > tr th:nth-child(2) {
         width: 110px;
@@ -28,6 +31,7 @@
         margin-bottom: 20px;
     }
 </style>
+
 <div id="cadastro">
     <section id="cadastro_cabecalho">
         <h1>@ViewBag.Title</h1>
@@ -36,6 +40,7 @@
         <div id="cabecalho_grid" class="row">
             <div class="col-md-12">
                 <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
+                @Html.DropDownList("ddl_tam_pag", (SelectList)ViewBag.ListaTamPag, new { @class="selectpicker"})
             </div>
         </div>
         <div class="row">
@@ -129,6 +134,8 @@
     </fieldset>
 </div>
 @section Scripts {
+
+    <script src="~/Scripts/bootstrap-select.js"></script>
     <script>
 
         function add_anti_forgery_token(data) {
@@ -223,14 +230,14 @@
                     },
                     callback: function (result) {
                         if (result) {
-                            $.post(url, add_anti_forgery_token (param), function (response) {
+                            $.post(url, add_anti_forgery_token(param), function (response) {
                                 if (response) {
                                     tr.remove();
                                 }
                             });
                         }
                     }
-                })
+                });
             })
             .on('click', '#btn_confirmar', function () {
                    var btn = $(this),
@@ -240,6 +247,7 @@
                     Nome: $('#txt_nome').val(),
                     Ativo: $('#cbx_ativo').prop('checked')
                 };
+
                 $.post(url, add_anti_forgery_token (param), function (response) {
                     if (response.Resultado == "OK") {
                         if (param.Id == 0) {
@@ -272,8 +280,8 @@
                     }
                 });
             })
-        on('click', '.page-item', function () {
-            var btn = $(this);
+        .on('click', '.page-item', function () {
+            var btn = $(this),
             pagina = btn.text(),
                 url = '@Url.Action("GrupoProdutoPagina", "Cadastro")';
             $.post(url, add_anti_forgery_token({ pagina }), function (response) {
@@ -282,12 +290,15 @@
                     table.empty();
                     for (var i = 0; i < response.length; i++) {
                         table.append(criar_linha_grid(response[i]));
-                        
+
                     }
 
-                    
+                    btn.siblings().removeClass('active');
+                    btn.addClass('active');
                 }
 
             });
         });
+
     </script>
+}
