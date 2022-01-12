@@ -1,63 +1,34 @@
 ﻿
-function add_anti_forgery_token(data) {
-    data.__RequestVerificationToken = $('[name = __RequestVerificationToken]').val();
-    return data;
-}
 
-function abrir_form(dados) {
+
+function set_dados_form(dados) {
     $('#id_cadastro').val(dados.Id);
     $('#txt_nome').val(dados.Nome);
     $('#cbx_ativo').prop('checked', dados.Ativo);
-
-    var modal_cadastro = $('#modal_cadastro');
-
-    $('#msg_mensagem_aviso').empty();
-
-    $('#msg_aviso').hide();
-    $('#msg_mensagem_aviso').hide();
-    $('#msg_erro').hide();
-
-    bootbox.dialog({
-        title: tituloPagina,
-        message: modal_cadastro,
-
-    })
-        .on('shown.bs.modal', function () {
-            modal_cadastro.show(0, function () {
-                $('#txt_nome').focus();
-            });
-        })
-        .on('hidden.bs.modal', function () {
-            modal_cadastro.hide().appendTo('body');
-        });
-
 }
 
-function criar_linha_grid(dados) {
-    var ret =
-        '<tr data-id=' + dados.Id + '>' +
-        '<td>' + dados.Nome + '</td>' +
+function set_focus_form() {
+
+    $('#txt_nome').focus();
+}
+
+function set_dados_grid(dados) {
+    return  '<td>' + dados.Nome + '</td>' +
         '<td>' + (dados.Ativo ? 'SIM' : 'NÃO') + '</td>' +
-        '<td>' +
-        '<a class="btn btn-primary btn-alterar" role="button" style="margin-right: 3px"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>' +
-        '<a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>' +
-        '</td>' +
-        '</tr>';
-    return ret;
 }
 
-function formatar_mensagem_aviso(mensagens) {
-    var ret = "";
-    for (var i = 0; i < mensagens.length; i++) {
-        ret += '<li>' + mensagens[i] + '</li>';
-    }
-
-    return '<ul>' + ret + '</ul>'
+function get_dados_inclusao() {
+    return {
+        Id: 0,
+        Nome: '',
+        Ativo: true
+    };
 }
 
 $(document).on('click', '#btn_incluir', function () {
-    abrir_form({ Id: 0, Nome: '', Ativo: true });
+    abrir_form(get_dados_inclusao());
 })
+
     .on('click', '.btn-alterar', function () {
         var btn = $(this),
             id = btn.closest('tr').attr('data-id'),
@@ -71,6 +42,7 @@ $(document).on('click', '#btn_incluir', function () {
         });
 
     })
+
     .on('click', '.btn-excluir', function () {
         var btn = $(this),
             tr = btn.closest('tr'),
@@ -100,6 +72,7 @@ $(document).on('click', '#btn_incluir', function () {
             }
         });
     })
+
     .on('click', '#btn_confirmar', function () {
         var btn = $(this),
             url = urlSalvar;
@@ -141,6 +114,7 @@ $(document).on('click', '#btn_incluir', function () {
             }
         });
     })
+
     .on('click', '.page-item', function () {
         var btn = $(this),
             tamPag = $('#ddl_tam_pag').val(),
@@ -163,6 +137,7 @@ $(document).on('click', '#btn_incluir', function () {
 
         });
     })
+
     .on('change', '#ddl_tam_pag', function () {
         var ddl = $(this),
             tamPag = ddl.val(),
