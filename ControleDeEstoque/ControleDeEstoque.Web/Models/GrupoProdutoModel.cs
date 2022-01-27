@@ -29,7 +29,17 @@ namespace ControleDeEstoque.Web.Models
                 conexao.Open();
                 using (var comando = new SqlCommand())
                 {
-                    var pos = (pagina - 1) * tamPagina;
+                    var pos = 0;
+                    if (pagina != 1)
+                    {
+                        pos = (pagina - 1) * tamPagina;
+                        pos++;
+                    }
+                    else
+                    {
+                        pos = (pagina - 1) * tamPagina;
+
+                    }
 
                     comando.Connection = conexao;
                     comando.CommandText = string.Format(

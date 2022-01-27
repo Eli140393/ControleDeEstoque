@@ -23,6 +23,7 @@ namespace ControleDeEstoque.Web.Models
         public string Nome { get; set; }
 
 
+
         public static UsuarioModel ValidarUsuario(string login, string senha)
         {
              UsuarioModel ret = null;
@@ -59,7 +60,25 @@ namespace ControleDeEstoque.Web.Models
             return ret;
         }
 
-        public static List<UsuarioModel> RecuperarLista()
+        public static int RecuperarQuantidade()
+        {
+            var ret = 0;
+            using (var conexao = new SqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+                using (var comando = new SqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = "select count(*) from TB_Usuario";
+                    ret = (int)comando.ExecuteScalar();
+                }
+            }
+
+            return ret;
+        }
+
+        public static List<UsuarioModel> RecuperarLista(int pagina, int tamPagina)
         {
             var ret = new List<UsuarioModel>();
             using (var conexao = new SqlConnection())
@@ -68,8 +87,21 @@ namespace ControleDeEstoque.Web.Models
                 conexao.Open();
                 using (var comando = new SqlCommand())
                 {
+                    var pos = 0;
+                    if (pagina != 1)
+                    {
+                        pos = (pagina - 1) * tamPagina;
+                        pos++;
+                    }
+                    else
+                    {
+                        pos = (pagina - 1) * tamPagina;
+
+                    }
                     comando.Connection = conexao;
-                    comando.CommandText = "select * from TB_Usuario order by NM_Usuario";
+                    comando.CommandText = string.Format(
+                    "select * from TB_Usuario order by NM_Usuario offset {0} rows fetch next {1} rows only",
+                    pos > 0 ? pos - 1 : 0, tamPagina);
                     var reader = comando.ExecuteReader();
                     while (reader.Read())
                     {

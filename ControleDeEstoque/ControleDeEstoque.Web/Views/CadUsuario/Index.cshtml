@@ -1,118 +1,88 @@
 ﻿
 @model List<ControleDeEstoque.Web.Models.UsuarioModel>
 @{
-    ViewBag.Title = "Cadastro de usuários";
+    Layout = "~/Views/shared/_Cadastro.cshtml";
+
+    ViewBag.Title = "Usuário";
 }
-<style>
-    #grid_cadastro > thead > tr th:nth-child(2) {
-        width: 110px;
+
+@section Styles {
+    <link href="~/Content/Cadastros/Usuario.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+}
+
+@section TituloGrid {
+    <th>Nome</th>
+    <th>Login</th>
+    <th>Ação</th>
+}
+@section LinhaGrid {
+    @{
+
+        var linha = 0;
+        foreach (var item in Model)
+        {
+            linha++;
+            if (linha <= ViewBag.QuantidadeLinhasPorPaginas)
+            {
+                <tr data-id="@item.Id">
+                    <td>@item.Nome</td>
+                    <td>@item.Login</td>
+                    <td>
+                        <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                        <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                break;
+            }
+        }
     }
 
-    #grid_cadastro > thead > tr th:nth-child(3) {
-        width: 200px;
-    }
+}
 
-    #cadastro {
-        width: 70%;
-        margin: 0 auto;
-    }
-
-    #cadastro_cabecalho {
-        border-bottom: 1px #dddddd solid;
-    }
-
-    #cadastro_conteudo {
-        margin-top: 20px;
-    }
-
-    #cabecalho_grid {
-        margin-bottom: 20px;
-    }
-</style>
-<div id="cadastro">
-    <section id="cadastro_cabecalho">
-        <h1>@ViewBag.Title</h1>
-    </section>
-    <section id="cadastro_conteudo">
-        <div id="cabecalho_grid" class="row">
+@section CamposCadastro {
+    <div class="row">
+        <div class="form-group">
             <div class="col-md-12">
-                <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
+                @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
+                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
             </div>
         </div>
-        <div class="row">
+
+        <div class="form-group">
             <div class="col-md-12">
-                <table id="grid_cadastro" class="table table-bordered table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Login</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr data-id="@item.Id">
-                                <td>@item.Nome</td>
-                                <td>@item.Login</td>
-
-                                <td>
-                                    <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-                                    <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                @Html.Label("txt_login", "Login", new { @class = "col-md-3 control-label" })
+                @Html.TextBox("txt_login", null, new { @class = "form-control" })
             </div>
         </div>
-       
-    </section>
-</div>
-@Html.Hidden("id_cadastro")
-<div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
-    <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
-    <fieldset>
-        @Html.AntiForgeryToken();
-        <div class="row">
-            <div class="form-group">
-                <div class="col-md-12">
-                    @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
-                    @Html.TextBox("txt_nome", null, new { @class = "form-control" })
-                </div>
-            </div>
 
-            <div class="form-group">
-                <div class="col-md-12">
-                    @Html.Label("txt_login", "Login", new { @class = "col-md-3 control-label" })
-                    @Html.TextBox("txt_login", null, new { @class = "form-control" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-12">
-                    @Html.Label("txt_senha", "Senha", new { @class = "col-md-3 control-label" })
-                    @Html.TextBox("txt_senha", null, new { @class = "form-control", type = "password" })
-                </div>
-            </div>
-
-        </div>
-
-
-        <div class="row">
+        <div class="form-group">
             <div class="col-md-12">
-                <div class="form-group">
-                    <div class="modal-footer">
-                        <a id="btn_sair" class="btn btn-default" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Sair</a>
-                        <a id="btn_confirmar" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-ok"></i> Salvar</a>
-                    </div>
-                    <div id="msg_aviso" class="alert alert-warning invisivel"> Falta preecher os campos acima.</div>
-                    <div id="msg_erro" class="alert alert-danger invisivel"> Ops! Deu ruim! </div>
-                </div>
+                @Html.Label("txt_senha", "Senha", new { @class = "col-md-3 control-label" })
+                @Html.TextBox("txt_senha", null, new { @class = "form-control", type = "password" })
             </div>
         </div>
-    </fieldset>
-</div>
+
+    </div>
+
+}
+@section Scripts {
+    <script src="~/Scripts/bootstrap-select.js"></script>
+    <script>
+        var tituloPagina = '@ViewBag.title';
+        var urlRecuperar = '@Url.Action("RecuperarUsuario", "CadUsuario")';
+        var urlExclusao = '@Url.Action("ExcluirUsuario", "CadUsuario")';
+        var urlSalvar = '@Url.Action("SalvarUsuario", "CadUsuario")';
+        var urlPagina = '@Url.Action("UsuarioPagina", "CadUsuario")';
+    </script>
+    <script src="~/Scripts/Cadastro/GrupoProduto.js"></script>
+
+}
+
+
 @section Scripts {
     <script>
 

@@ -2,7 +2,8 @@
 @{
     Layout = "~/Views/shared/_Cadastro.cshtml";
 
-    ViewBag.Title = "Cadastro de Grupo de Produtos";
+    ViewBag.Title = "Grupo de Produtos";
+
 }
 
 @section Styles {
@@ -65,10 +66,11 @@
     <script src="~/Scripts/bootstrap-select.js"></script>
     <script>
         var tituloPagina = '@ViewBag.title';
-        var urlRecuperar = '@Url.Action("RecuperarGrupoProduto", "CadGrupoProduto")';
-        var urlExclusao = '@Url.Action("ExcluirGrupoProduto", "CadGrupoProduto")';
-        var urlSalvar = '@Url.Action("SalvarGrupoProduto", "CadGrupoProduto")';
-        var urlPagina = '@Url.Action("GrupoProdutoPagina", "CadGrupoProduto")';
+        var url_recuperar = '@Url.Action("RecuperarGrupoProduto", "CadGrupoProduto")';
+        var url_exclusao = '@Url.Action("ExcluirGrupoProduto", "CadGrupoProduto")';
+        var url_salvar = '@Url.Action("SalvarGrupoProduto", "CadGrupoProduto")';
+        var url_pagina = '@Url.Action("GrupoProdutoPagina", "CadGrupoProduto")';
+        var url_tam_pag_change = '@Url.Action("GrupoProdutoPagina", "CadGrupoProduto")';
     </script>
     <script src="~/Scripts/Cadastro/GrupoProduto.js"></script>
 
