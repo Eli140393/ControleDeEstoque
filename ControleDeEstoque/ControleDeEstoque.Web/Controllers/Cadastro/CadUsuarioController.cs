@@ -40,6 +40,17 @@ namespace ControleDeEstoque.Web.Controllers.Cadastro
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
+        public JsonResult UsuarioPagina(int pagina, int tamPag)
+        {
+            var lista = UsuarioModel.RecuperarLista(pagina, tamPag);
+
+
+            return Json(lista);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
 
         public ActionResult SalvarUsuario(UsuarioModel model)
         {
