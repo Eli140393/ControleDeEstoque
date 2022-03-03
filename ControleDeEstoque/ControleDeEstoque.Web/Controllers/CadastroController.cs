@@ -24,10 +24,7 @@ namespace ControleDeEstoque.Web.Controllers
         }
 
         [Authorize]
-        public ActionResult UnidadeMedida()
-        {
-            return View();
-        }
+
         public ActionResult Produto()
         {
             return View();
@@ -57,11 +54,7 @@ namespace ControleDeEstoque.Web.Controllers
             return View();
         }
 
-        [Authorize]
-        public ActionResult PerfilUsuario()
-        {
-            return View();
-        }
+ 
 
        
     }

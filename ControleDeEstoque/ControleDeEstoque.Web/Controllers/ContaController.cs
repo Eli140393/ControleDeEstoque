@@ -28,16 +28,22 @@ namespace ControleDeEstoque.Web.Controllers
 
             var usuario = UsuarioModel.ValidarUsuario(login.Usuario, login.Senha);
 
-            if(usuario != null)
+            if (usuario != null)
             {
-                FormsAuthentication.SetAuthCookie(usuario.Nome,login.LembrarMe);
+                //    FormsAuthentication.SetAuthCookie(usuario.Nome,login.LembrarMe);
+                var ticket = FormsAuthentication.Encrypt(new FormsAuthenticationTicket(
+                      1, usuario.Nome, DateTime.Now, DateTime.Now.AddHours(12), login.LembrarMe, "Operador"));
+
+                var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, ticket);
+                Response.Cookies.Add(cookie);
+                 
                 if (Url.IsLocalUrl(returnUrl))
                 {
                     return Redirect(returnUrl);
                 }
                 else
                 {
-                  return  RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home");
                 }
             }
             else
@@ -52,7 +58,7 @@ namespace ControleDeEstoque.Web.Controllers
         public ActionResult LogOff()
         {
             FormsAuthentication.SignOut();
-           return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

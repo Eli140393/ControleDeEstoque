@@ -1,0 +1,78 @@
+﻿@model List<ControleDeEstoque.Web.PerfilModel>
+@{
+    Layout = "~/Views/shared/_Cadastro.cshtml";
+
+    ViewBag.Title = "Grupo de Perfis";
+
+}
+
+@section Styles {
+    <link href="~/Content/Cadastros/Perfil.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+}
+
+@section TituloGrid {
+    <th>Nome</th>
+    <th>Ativo</th>
+    <th>Ação</th>
+}
+
+@section LinhaGrid {
+    @{
+
+        var linha = 0;
+        foreach (var item in Model)
+        {
+            linha++;
+            if (linha <= ViewBag.QuantidadeLinhasPorPaginas)
+            {
+                var ativo = (item.Ativo ? "SIM" : "NÃO");
+                <tr data-id="@item.Id">
+                    <td>@item.Nome</td>
+                    <td>@ativo</td>
+                    <td>
+                        <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                        <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+}
+
+@section CamposCadastro {
+    <div class="row">
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
+                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
+                @Html.CheckBox("cbx_ativo")
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/Scripts/bootstrap-select.js"></script>
+    <script>
+        var tituloPagina = '@ViewBag.title';
+        var url_recuperar = '@Url.Action("RecuperarPerfil", "CadPerfilUsuario")';
+        var url_exclusao = '@Url.Action("ExcluirPerfil", "CadPerfilUsuario")';
+        var url_salvar = '@Url.Action("SalvarPerfil", "CadPerfilUsuario")';
+        var url_pagina = '@Url.Action("PerfilPagina", "CadPerfilUsuario")';
+        var url_tam_pag_change = '@Url.Action("PerfilPagina", "CadPerfilUsuario")';
+    </script>
+    <script src="~/Scripts/Cadastro/Perfil.js"></script>
+
+}
+

@@ -5,12 +5,14 @@ function add_anti_forgery_token(data) {
 }
 
 function formatar_mensagem_aviso(mensagens) {
-    var ret = "";
-    for (var i = 0; i < mensagens.length; i++) {
-        ret += '<li>' + mensagens[i] + '</li>';
-    }
 
-    return '<ul>' + ret + '</ul>'
+    var template =
+        '<ul>' +
+        '{{ #. }}'
+    '<li> {{ . }} </li>' +
+        '{{ /. }}'
+    '</ul>';
+    return Mustache.render(template, mensagens);
 }
 
 function abrir_form(dados) {
@@ -26,7 +28,7 @@ function abrir_form(dados) {
     $('#msg_erro').hide();
 
     bootbox.dialog({
-        title:'Cadastro de ' +  tituloPagina,
+        title: 'Cadastro de ' + tituloPagina,
         message: modal_cadastro,
 
     })
@@ -43,6 +45,10 @@ function abrir_form(dados) {
 }
 
 function criar_linha_grid(dados) {
+    var template = $('#template-grid').html();
+
+    return Mustache.render(template, dados);
+
     var ret =
         '<tr data-id=' + dados.Id + '>' +
         set_dados_grid(dados) +

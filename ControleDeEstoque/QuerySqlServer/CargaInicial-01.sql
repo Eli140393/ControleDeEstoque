@@ -1,11 +1,12 @@
 DROP TABLE IF EXISTS TB_GrupoProduto;
 DROP TABLE IF EXISTS TB_Usuario;
+DROP TABLE IF EXISTS TB_UnidadeMedida;
 
 
 
 CREATE TABLE TB_Usuario 
 (
-	ID_Usuario INT IDENTITY(1,1),
+	ID_Usuario INT IDENTITY(1,1) NOT NULL,
 	NM_Usuario VARCHAR(90) NOT NULL,
 	DS_Login VARCHAR(50) NOT NULL,
 	DS_Senha VARCHAR(50) NOT NULL,
@@ -14,24 +15,34 @@ CREATE TABLE TB_Usuario
 
 CREATE TABLE TB_GrupoProduto (
 
-ID_GrupoProduto INT IDENTITY (1,1),
-NM_GrupoProduto VARCHAR(50) NOT NULL,
-DS_Ativo BIT  NOT NULL,
-PRIMARY KEY (ID_GrupoProduto)
+	ID_GrupoProduto INT IDENTITY (1,1) NOT NULL,
+	NM_GrupoProduto VARCHAR(50) NOT NULL,
+	DS_Ativo BIT  NOT NULL,
+	PRIMARY KEY (ID_GrupoProduto)
 
 );
 
+CREATE TABLE TB_UnidadeMedida (
+	ID_UnidadeMedida INT IDENTITY (1,1) NOT NULL,
+	NM_UnidadeMeDida VARCHAR(30) NOT NULL,
+	SG_UnidadeMedida VARCHAR(3) NOT NULL,
+	DS_Ativo BIT NOT NULL,
+	PRIMARY KEY (ID_UnidadeMedida)
+
+);
+
+
 INSERT INTO TB_Usuario
 (
-NM_Usuario,
-DS_Login,
-DS_Senha
+	NM_Usuario,
+	DS_Login,
+	DS_Senha
 )
 VALUES
 (
-'Eliezer Silva',
-'eliezer',
-'202cb962ac59075b964b07152d234b70'
+	'Eliezer Silva',
+	'eliezer',
+	'202cb962ac59075b964b07152d234b70'
 );
 
 
@@ -48,3 +59,5 @@ VALUES
 
 SELECT * FROM TB_GrupoProduto;
 SELECT * FROM TB_Usuario;
+SELECT * FROM TB_UnidadeMedida;
+
