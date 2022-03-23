@@ -56,7 +56,34 @@ namespace ControleDeEstoque.Web
 
             return ret;
         }
+        public static List<PerfilModel> RecuperarListaAtivos()
+        {
+            var ret = new List<PerfilModel>();
+            using (var conexao = new SqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+                using (var comando = new SqlCommand())
+                {
+                  
+                    comando.Connection = conexao;
+                    comando.CommandText = string.Format(
+                    "select * from TB_PerfilUsuario where DS_Ativo = 1 order by NM_PerfilUsuario");
+                    var reader = comando.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        ret.Add(new PerfilModel
+                        {
+                            Id = (int)reader["ID_PerfilUsuario"],
+                            Nome = (string)reader["NM_PerfilUsuario"],
+                            Ativo = (bool)reader["DS_Ativo"],
+                        });
+                    }
+                }
+            }
 
+            return ret;
+        }
 
         public static int RecuperarQuantidade()
         {

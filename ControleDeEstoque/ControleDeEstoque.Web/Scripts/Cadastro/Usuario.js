@@ -3,6 +3,8 @@
     $('#txt_nome').val(dados.Nome);
     $('#txt_login').val(dados.Login);
     $('#txt_senha').val(dados.Senha);
+    $('#ddl_perfil').val(dados.IdPerfil);
+
 
 }
 
@@ -21,7 +23,8 @@ function get_dados_inclusao() {
         Id: 0,
         Nome: '',
         Login: '',
-        Senha: ''
+        Senha: '',
+        IdPerfil: 0
     };
 }
 

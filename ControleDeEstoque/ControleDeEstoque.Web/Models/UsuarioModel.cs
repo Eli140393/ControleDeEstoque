@@ -22,6 +22,8 @@ namespace ControleDeEstoque.Web.Models
         [Required(ErrorMessage = "Informe o nome")]
         public string Nome { get; set; }
 
+        [Required(ErrorMessage = "Informe o perfil")]
+        public int  IdPerfil { get; set; }
 
 
         public static UsuarioModel ValidarUsuario(string login, string senha)
@@ -110,6 +112,7 @@ namespace ControleDeEstoque.Web.Models
                             Id = (int)reader["ID_Usuario"],
                             Nome = (string)reader["NM_Usuario"],
                             Login = (string)reader["DS_Login"],
+                            IdPerfil = (int)reader["ID_PerfilUsuario"]
                         });
                     }
                 }
@@ -138,6 +141,8 @@ namespace ControleDeEstoque.Web.Models
                             Id = (int)reader["ID_Usuario"],
                             Nome = (string)reader["NM_Usuario"],
                             Login = (string)reader["DS_Login"],
+                            IdPerfil = (int)reader["ID_PerfilUsuario"]
+
                         };
                     }
                 }
@@ -183,20 +188,23 @@ namespace ControleDeEstoque.Web.Models
 
                     if (model == null)
                     {
-                        comando.CommandText = "insert into TB_Usuario (NM_Usuario, DS_Login, DS_Senha ) values (@nome, @login, @senha); select convert (int, scope_identity())";
+                        comando.CommandText = "insert into TB_Usuario (NM_Usuario, DS_Login, DS_Senha, ID_PerfilUsuario ) values (@nome, @login, @senha, @perfil); select convert (int, scope_identity())";
                         comando.Parameters.Add("@nome", SqlDbType.VarChar).Value = this.Nome;
                         comando.Parameters.Add("@login", SqlDbType.VarChar).Value = this.Login;
                         comando.Parameters.Add("@senha", SqlDbType.VarChar).Value = CriptoHelper.HashMD5(this.Senha);
+                        comando.Parameters.Add("@perfil", SqlDbType.Int).Value = this.IdPerfil;
 
                         ret = (int)comando.ExecuteScalar();
                     }
                     else
                     {
-                        comando.CommandText = "update TB_Usuario set NM_Usuario = @nome, DS_Login = @login " +
+                        comando.CommandText = "update TB_Usuario set NM_Usuario = @nome, DS_Login = @login, ID_PerfilUsuario = @perfil " +
                         (!string.IsNullOrEmpty(this.Senha) ? " , DS_Senha = @senha " : "" ) +
                         "where ID_Usuario = @id";
                         comando.Parameters.Add("@nome", SqlDbType.VarChar).Value = this.Nome;
                         comando.Parameters.Add("@login", SqlDbType.VarChar).Value = this.Login;
+                        comando.Parameters.Add("@perfil", SqlDbType.Int).Value = this.IdPerfil;
+
                         if (!string.IsNullOrEmpty(this.Senha))
                         {
                             comando.Parameters.Add("@senha", SqlDbType.VarChar).Value = CriptoHelper.HashMD5(this.Senha);

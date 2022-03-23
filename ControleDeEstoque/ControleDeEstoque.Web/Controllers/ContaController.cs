@@ -32,7 +32,7 @@ namespace ControleDeEstoque.Web.Controllers
             {
                 //    FormsAuthentication.SetAuthCookie(usuario.Nome,login.LembrarMe);
                 var ticket = FormsAuthentication.Encrypt(new FormsAuthenticationTicket(
-                      1, usuario.Nome, DateTime.Now, DateTime.Now.AddHours(12), login.LembrarMe, "Operador"));
+                      1, usuario.Nome, DateTime.Now, DateTime.Now.AddHours(12), login.LembrarMe, PerfilModel.RecuperarPeloId(usuario.Id).Nome));
 
                 var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, ticket);
                 Response.Cookies.Add(cookie);
