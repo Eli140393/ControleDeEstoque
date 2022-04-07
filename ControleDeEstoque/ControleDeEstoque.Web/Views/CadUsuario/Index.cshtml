@@ -16,32 +16,7 @@
     <th>Login</th>
     <th>Ação</th>
 }
-@section LinhaGrid {
-    @{
 
-        var linha = 0;
-        foreach (var item in Model)
-        {
-            linha++;
-            if (linha <= ViewBag.QuantidadeLinhasPorPaginas)
-            {
-                <tr data-id="@item.Id">
-                    <td>@item.Nome</td>
-                    <td>@item.Login</td>
-                    <td>
-                        <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-                        <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-                    </td>
-                </tr>
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-
-}
 
 @section CamposCadastro {
     <div class="row">
@@ -66,9 +41,10 @@
             </div>
         </div>
         <div class="form-group">
-            @Html.Label("txt_perfil", "Perfil", new { @class = "col-md-3 control-label" })
             <div class="col-md-12">
-                @Html.DropDownList("ddl_perfil", new SelectList(ViewBag.ListaPerfil, "Id", "Nome"), new { @class = "form-control" })
+                @Html.Label("txt_perfil", "Perfil", new { @class = "col-md-3 control-label" })
+
+                @Html.DropDownList("ddl_perfil", new SelectList(ViewBag.ListaPerfil, "IdPerfil", "Nome"), new {  @class = "form-control" })
             </div>
         </div>
     </div>
@@ -83,7 +59,35 @@
         var url_salvar = '@Url.Action("SalvarUsuario", "CadUsuario")';
         var url_pagina = '@Url.Action("UsuarioPagina", "CadUsuario")';
         var url_tam_pag_change = '@Url.Action("UsuarioPagina", "CadUsuario")';
+        var linhas = [];
 
+          @{
+
+        var linha = 0;
+        foreach (var item in Model)
+        {
+            linha++;
+            if (linha <= ViewBag.QuantidadeLinhasPorPaginas)
+            {
+              @:linhas.push(@Html.Raw(Json.Encode(item)));
+
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+    </script>
+    <script id="template-grid" type="x-tmpl-mustache">
+        <tr data-id="{{ Id }}">
+            <td>{{ Nome }}</td>
+            <td>{{ Login }}</td>
+        <td>
+                <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+            </td>
+        </tr>
     </script>
     <script src="~/Scripts/Cadastro/Usuario.js"></script>
 

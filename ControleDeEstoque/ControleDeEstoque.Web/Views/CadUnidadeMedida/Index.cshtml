@@ -18,34 +18,7 @@
     <th>Ação</th>
 }
 
-@section LinhaGrid {
-    @{
 
-        var linha = 0;
-        foreach (var item in Model)
-        {
-            linha++;
-            if (linha <= ViewBag.QuantidadeLinhasPorPaginas)
-            {
-                var ativo = (item.Ativo ? "SIM" : "NÃO");
-                <tr data-id="@item.Id">
-                    <td>@item.Nome</td>
-                    <td>@item.Sigla</td>
-                    <td>@ativo</td>
-                    <td>
-                        <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-                        <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-                    </td>
-                </tr>
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-
-}
 
 @section CamposCadastro {
     <div class="row">
@@ -79,6 +52,35 @@
         var url_salvar = '@Url.Action("SalvarUnidadeMedida", "CadUnidadeMedida")';
         var url_pagina = '@Url.Action("UnidadeMedidaPagina", "CadUnidadeMedida")';
         var url_tam_pag_change = '@Url.Action("UnidadeMedidaPagina", "CadUnidadeMedida")';
+        var linhas = [];
+           @{
+
+        var linha = 0;
+        foreach (var item in Model)
+        {
+            linha++;
+            if (linha <= ViewBag.QuantidadeLinhasPorPaginas)
+            {
+               @:linhas.push(@Html.Raw(Json.Encode(item)));
+
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+    </script>
+    <script id="template-grid" type="x-tmpl-mustache">
+        <tr data-id="{{ Id }}">
+            <td>{{ Nome }}</td>
+            <td>{{ Sigla }}</td>
+            <td>{{ #Ativo }}SIM{{ /Ativo }}{{ ^Ativo }}NÃO{{ /Ativo }}</td>
+            <td>
+                <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+            </td>
+        </tr>
     </script>
     <script src="~/Scripts/Cadastro/UnidadeMedida.js"></script>
 

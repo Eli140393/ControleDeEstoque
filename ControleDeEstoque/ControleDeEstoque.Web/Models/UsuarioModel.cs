@@ -52,7 +52,7 @@ namespace ControleDeEstoque.Web.Models
                             Nome = (string)reader["NM_Usuario"],
                             Login = (string)reader["DS_Login"],
                             Senha = (string)reader["DS_Senha"],
-
+                            IdPerfil = (int)reader["ID_PerfilUsuario"]
 
                         };
                     }

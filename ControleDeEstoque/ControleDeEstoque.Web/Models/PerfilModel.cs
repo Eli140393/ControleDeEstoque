@@ -8,7 +8,7 @@ namespace ControleDeEstoque.Web
 {
     public class PerfilModel
     {
-        public int Id { get; set; }
+        public int IdPerfil { get; set; }
 
         [Required(ErrorMessage = "Preencha o nome ")]
         public string Nome { get; set; }
@@ -33,7 +33,7 @@ namespace ControleDeEstoque.Web
                     }
                     else
                     {
-                        pos = (pagina - 1) * tamPagina;
+                        pos = (pagina - 1 ) * tamPagina;
 
                     }
 
@@ -46,7 +46,7 @@ namespace ControleDeEstoque.Web
                     {
                         ret.Add(new PerfilModel
                         {
-                            Id = (int)reader["ID_PerfilUsuario"],
+                            IdPerfil = (int)reader["ID_PerfilUsuario"],
                             Nome = (string)reader["NM_PerfilUsuario"],
                             Ativo = (bool)reader["DS_Ativo"],
                         });
@@ -74,7 +74,7 @@ namespace ControleDeEstoque.Web
                     {
                         ret.Add(new PerfilModel
                         {
-                            Id = (int)reader["ID_PerfilUsuario"],
+                            IdPerfil = (int)reader["ID_PerfilUsuario"],
                             Nome = (string)reader["NM_PerfilUsuario"],
                             Ativo = (bool)reader["DS_Ativo"],
                         });
@@ -113,14 +113,14 @@ namespace ControleDeEstoque.Web
                 using (var comando = new SqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = "select * from TB_PerfilUsuario where (ID_perfilUsuario = @id)";
+                    comando.CommandText = "select * from TB_PerfilUsuario where (ID_PerfilUsuario = @id)";
                     comando.Parameters.Add("@id", SqlDbType.Int).Value = id;
                     var reader = comando.ExecuteReader();
                     if (reader.Read())
                     {
                         ret = new PerfilModel
                         {
-                            Id = (int)reader["ID_PerfilUsuario"],
+                            IdPerfil = (int)reader["ID_PerfilUsuario"],
                             Nome = (string)reader["NM_PerfilUsuario"],
                             Ativo = (bool)reader["DS_Ativo"],
                         };
@@ -156,7 +156,7 @@ namespace ControleDeEstoque.Web
         public int Salvar()
         {
             var ret = 0;
-            var model = RecuperarPeloId(this.Id);
+            var model = RecuperarPeloId(this.IdPerfil);
 
             using (var conexao = new SqlConnection())
             {
@@ -178,11 +178,11 @@ namespace ControleDeEstoque.Web
                         comando.CommandText = "update TB_PerfilUsuario set NM_PerfilUsuario = @nome, DS_Ativo = @ativo where ID_PerfilUSuario = @id";
                         comando.Parameters.Add("@nome", SqlDbType.VarChar).Value = this.Nome;
                         comando.Parameters.Add("@ativo", SqlDbType.VarChar).Value = this.Ativo ? 1 : 0;
-                        comando.Parameters.Add("@id", SqlDbType.Int).Value = this.Id;
+                        comando.Parameters.Add("@id", SqlDbType.Int).Value = this.IdPerfil;
 
                         if (comando.ExecuteNonQuery() > 0)
                         {
-                            ret = this.Id;
+                            ret = this.IdPerfil;
                         }
                     }
                 }

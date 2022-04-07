@@ -29,7 +29,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @RenderSection("LinhaGrid", true)
 
                     </tbody>
                 </table>
@@ -58,7 +57,7 @@
 <div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
     <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
     <fieldset>
-        @Html.AntiForgeryToken();
+        @Html.AntiForgeryToken()
         @RenderSection("CamposCadastro", true)
         <div class="row">
             <div class="col-md-12">
